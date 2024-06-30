@@ -8,6 +8,7 @@
 * Using a G5.xlarge instance - G6's would be lower cost but are only [available in in US East (N. Virginia and Ohio) and US West (Oregon) regions so far](https://aws.amazon.com/about-aws/whats-new/2024/04/general-availability-amazon-ec2-g6-instances/)
 * Not using Graviton instances (G5g), The T4G GPUs used in G5g instances are less powerful than those in other GPU instance types.
 
+The log from the Docker container once Triton has started up:
 ```
 I0630 09:01:04.101097 1 metrics.cc:864] Collecting metrics for GPU 0: NVIDIA A10G
 I0630 09:01:04.101779 1 metrics.cc:757] Collecting CPU metrics
@@ -38,6 +39,7 @@ I0630 09:01:04.696305 1 http_server.cc:184] Started Metrics Service at 0.0.0.0:8
 
 ## Before you begin, You will need
 
+* An AWS account - Copy `terraform.tfvars.example` to `terraform.tfvars` with details from your own account, such as VPC and Subnet IDs.
 * [Packer](https://www.packer.io/) is used to create an Amazon Machine Image (AMI). An AMI is like a prepared EC2 instance that has not been started up yet.
 
 * [Ansible](https://www.ansible.com/) is used within Packer to install some neccessary services while Packer is building the image.
