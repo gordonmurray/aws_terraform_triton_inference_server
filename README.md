@@ -4,6 +4,9 @@
 
 ## Intro
 
+This project uses Packer to create an AMI with Docker, Nvidia drivers and Nvidia Triton inference server pre-installed.
+Terraform is then used to deploy this AMI as part of an auto scaling group. 1 instance is created. You can update `aws_autoscaling_group.tf` to change the desired number of instances.
+
 * Using Ubuntu 22.04 LTS as a base - Ubuntu 24.04 worked in some brief testing but doesn't seem to be [supported yet](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/supported-platforms.html)
 * Using a G5.xlarge instance - G6's would be lower cost but are only [available in in US East (N. Virginia and Ohio) and US West (Oregon) regions so far](https://aws.amazon.com/about-aws/whats-new/2024/04/general-availability-amazon-ec2-g6-instances/)
 * Not using Graviton instances (G5g), The T4G GPUs used in G5g instances are less powerful than those in other GPU instance types.
