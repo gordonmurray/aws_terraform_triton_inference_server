@@ -1,0 +1,6 @@
+---
+# Handlers for Triton Inference Server
+- name: restart docker
+  systemd:
+    name: docker
+    state: restarted

@@ -1,0 +1,9 @@
+aws_account_id = ""
+
+vpc_id = "vpc-"
+
+subnets = [
+  "subnet-",
+  "subnet-",
+  "subnet-"
+]

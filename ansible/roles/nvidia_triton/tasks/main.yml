@@ -1,0 +1,78 @@
+---
+# Tasks for installing and running NVIDIA Triton Inference Server
+
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Install required packages
+  apt:
+    name:
+      - curl
+      - linux-headers-{{ ansible_kernel }}
+      - build-essential
+      - ubuntu-drivers-common
+    state: present
+
+- name: Add NVIDIA Docker repository
+  block:
+    - name: Get distribution variable
+      shell: . /etc/os-release && echo $ID$VERSION_ID
+      register: distribution
+
+    - name: Add NVIDIA GPG key
+      apt_key:
+        url: https://nvidia.github.io/nvidia-docker/gpgkey
+        state: present
+
+    - name: Add NVIDIA Docker repository
+      get_url:
+        url: "https://nvidia.github.io/nvidia-docker/{{ distribution.stdout }}/nvidia-docker.list"
+        dest: /etc/apt/sources.list.d/nvidia-docker.list
+
+- name: Update all packages
+  apt:
+    upgrade: dist
+    update_cache: yes
+  become: true
+
+- name: Install NVIDIA Container Toolkit and runtime
+  apt:
+    name:
+      - nvidia-container-toolkit
+      - nvidia-container-runtime
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Install NVIDIA driver
+  apt:
+    name: nvidia-driver-535
+    state: present
+
+- name: Configure Docker to use NVIDIA runtime
+  command: nvidia-ctk runtime configure --runtime=docker
+
+- name: Pull NVIDIA Triton Inference Server Docker image
+  docker_image:
+    name: "{{ triton_image }}"
+    source: pull
+
+- name: Run Triton Inference Server Docker container
+  docker_container:
+    name: triton_inference_server
+    image: "{{ triton_image }}"
+    state: started
+    restart_policy: always
+    published_ports:
+      - "{{ triton_port_http }}:8000"
+      - "{{ triton_port_grpc }}:8001"
+      - "{{ triton_port_metrics }}:8002"
+    devices:
+      - "/dev/nvidia0:/dev/nvidia0"
+      - "/dev/nvidiactl:/dev/nvidiactl"
+      - "/dev/nvidia-uvm:/dev/nvidia-uvm"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+  ignore_errors: true

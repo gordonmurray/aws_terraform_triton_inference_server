@@ -1,0 +1,8 @@
+---
+- name: Install components
+  hosts: all
+  become: true
+
+  roles:
+    - docker_ce
+    - nvidia_triton

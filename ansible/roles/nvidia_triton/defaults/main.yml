@@ -1,0 +1,6 @@
+---
+# Default variables for Triton Inference Server
+triton_image: "nvcr.io/nvidia/tritonserver:22.12-py3"
+triton_port_http: 8000
+triton_port_grpc: 8001
+triton_port_metrics: 8002
