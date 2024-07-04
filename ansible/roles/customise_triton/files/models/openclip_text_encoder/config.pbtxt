@@ -1,0 +1,18 @@
+name: "openclip_text_encoder"
+backend: "python"
+max_batch_size : 1024
+
+input [
+  {
+    name: "text_encoder_input"
+    data_type: TYPE_INT64
+    dims: [77]
+  }
+]
+output [
+  {
+    name: "text_encoder_output"
+    data_type: TYPE_FP32
+    dims: [-1, 768]
+  }
+]

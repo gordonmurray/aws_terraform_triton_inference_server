@@ -1,0 +1,6 @@
+FROM nvcr.io/nvidia/tritonserver:24.05-py3 as runtime
+
+COPY ./models /models
+COPY ./model_cache /model_cache
+
+RUN /bin/pip3 install open_clip_torch

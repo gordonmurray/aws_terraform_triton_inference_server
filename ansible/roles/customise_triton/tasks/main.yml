@@ -1,0 +1,39 @@
+- name: Copy Dockerfile to remote host
+  template:
+    src: templates/Dockerfile.j2
+    dest: "/tmp/Dockerfile"
+
+- name: Copy models to remote host
+  ansible.builtin.copy:
+    src: "files/models/"
+    dest: "/tmp/models/"
+    owner: ubuntu
+    group: ubuntu
+    mode: "0755"
+
+- name: Ensure the model cache directory exists
+  ansible.builtin.file:
+    path: "/tmp/model_cache/laion--CLIP-ViT-L-14-laion2B-s32B-b82K/"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Download model file from Hugging Face
+  ansible.builtin.get_url:
+    url: "https://huggingface.co/laion/CLIP-ViT-L-14-laion2B-s32B-b82K/resolve/main/open_clip_pytorch_model.bin"
+    dest: "/tmp/model_cache/laion--CLIP-ViT-L-14-laion2B-s32B-b82K/model.bin"
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'
+    timeout: 60
+    force: yes
+    validate_certs: yes
+
+- name: Build Docker image
+  community.docker.docker_image:
+    name: "triton-custom"
+    build:
+      path: "/tmp"
+      pull: yes
+    source: build
