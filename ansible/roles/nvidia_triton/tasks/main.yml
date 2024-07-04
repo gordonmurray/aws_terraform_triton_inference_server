@@ -53,26 +53,3 @@
 
 - name: Configure Docker to use NVIDIA runtime
   command: nvidia-ctk runtime configure --runtime=docker
-
-- name: Pull NVIDIA Triton Inference Server Docker image
-  docker_image:
-    name: "{{ triton_image }}"
-    source: pull
-
-- name: Run Triton Inference Server Docker container
-  docker_container:
-    name: triton_inference_server
-    image: "{{ triton_image }}"
-    state: started
-    restart_policy: always
-    published_ports:
-      - "{{ triton_port_http }}:8000"
-      - "{{ triton_port_grpc }}:8001"
-      - "{{ triton_port_metrics }}:8002"
-    devices:
-      - "/dev/nvidia0:/dev/nvidia0"
-      - "/dev/nvidiactl:/dev/nvidiactl"
-      - "/dev/nvidia-uvm:/dev/nvidia-uvm"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-  ignore_errors: true
