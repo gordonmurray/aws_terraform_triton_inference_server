@@ -45,7 +45,7 @@ source "amazon-ebs" "ubuntu" {
 
   launch_block_device_mappings {
     device_name           = "/dev/sda1"
-    volume_size           = 200
+    volume_size           = 100
     volume_type           = "gp3"
     delete_on_termination = true
   }
@@ -70,7 +70,8 @@ build {
     playbook_file = "../ansible/playbook.yml"
     role_paths    = [
       "../ansible/roles/docker_ce",
-      "../ansible/roles/nvidia_triton"
+      "../ansible/roles/nvidia_triton",
+      "../ansible/roles/customise_triton",
       ]
   }
 
